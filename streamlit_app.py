@@ -12,47 +12,62 @@ st.write(
     "To use this app, you need to provide an OpenAI API key, which you can get [here](https://platform.openai.com/account/api-keys). "
 )
 
-# Ask user for their OpenAI API key via `st.text_input`.
-# Alternatively, you can store the API key in `./.streamlit/secrets.toml` and access it
-# via `st.secrets`, see https://docs.streamlit.io/develop/concepts/connections/secrets-management
-openai_api_key = st.text_input("OpenAI API Key", type="password")
-if not openai_api_key:
-    st.info("Please add your OpenAI API key to continue.", icon="🗝️")
-else:
 
-    # Create an OpenAI client.
-    client = OpenAI(api_key=openai_api_key)
 
-    # Let the user upload a file via `st.file_uploader`.
-    uploaded_file = st.file_uploader(
-        "Upload a document (.txt or .md)", type=("txt", "md","xlsx"),
-    )
 
-    # Ask the user for a question via `st.text_area`.
-    question = st.text_area(
-        "Now ask a question about the document!",
-        placeholder="Can you give me a short summary?",
-        disabled=not uploaded_file,
-    )
+css="""
+<style>
 
-    if uploaded_file and question:
-        defu: pd.DataFrame = pd.read_excel(uploaded_file.read())
-        st.write(str(defu.head()))
-        # Process the uploaded file and question.
-        document = uploaded_file.read().decode()
-        messages = [
-            {
-                "role": "user",
-                "content": f"Here's a document: {document} \n\n---\n\n {question}",
-            }
-        ]
+[data-testid="stFileUploaderDropzone"] div div::before {
+content:"Sube un Excel de indexaciones"}
+[data-testid="stFileUploaderDropzone"] div div span {
+display:none;}
 
-        # Generate an answer using the OpenAI API.
-        stream = client.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages=messages,
-            stream=True,
-        )
+[data-testid="stFileUploader"]>section[data-testid="stFileUploaderDropzone"]>button[data-testid="stBaseButton-secondary"] {
+       color: rgba(0, 0, 0, 0);
+    }
+    [data-testid="stFileUploader"]>section[data-testid="stFileUploaderDropzone"]>button[data-testid="stBaseButton-secondary"]::after {
+        content: "Subir";
+        color:green;
+        display: block;
+        position: absolute;
+    }
+[data-testid="stFileUploaderDropzone"] div div::after { font-size: .8em; content:"Límite 200MB"}
+[data-testid="stFileUploaderDropzone"] div div small{display:none;}
+</style>
+"""
 
-        # Stream the response to the app using `st.write_stream`.
-        st.write_stream(stream)
+# Let the user upload a file via `st.file_uploader`.
+uploaded_file = st.file_uploader(
+    "Sube un Excel de indexaciones (.xlsx)", type=("xlsx"),
+    help="Algunos tips"
+)
+
+st.markdown(css, unsafe_allow_html=True)
+
+
+col1, col2 = st.columns(2)
+
+with st.form("my_form"):
+    with col1:
+        st.write("Inside the form 1")
+        nombre_val = st.text_input("Nombre")
+        apellido_1_val = st.text_input("Apellido 1")
+        apellido_2_val = st.text_input("Apellido 2")
+    with col2:
+        st.write("Inside the form 2")
+        nombre_padre_val = st.text_input("Nombre Padre")
+        nombre_madre_val = st.text_input("Nombre Madre")
+     # Every form must have a submit button.
+    submitted = st.form_submit_button("Buscar")
+    if submitted:
+        st.write("nombre_val", nombre_val, "nombre_padre_val", nombre_padre_val)
+
+
+
+
+
+if uploaded_file and submitted:
+    defu: pd.DataFrame = pd.read_excel(uploaded_file.read())
+    st.write(str(defu.head()))
+
