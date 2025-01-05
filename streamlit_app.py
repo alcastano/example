@@ -1,10 +1,14 @@
 import streamlit as st
 from openai import OpenAI
+import pandas as pd
+import numpy
+#import pip
+#pip.main(["install", "openpyxl"])
 
 # Show title and description.
 st.title("📄 Document question answering")
 st.write(
-    "Upload a document below and ask a question about it – GPT will answer! "
+    "HI HIH IHI Upload a document below and ask a question about it – GPT will answer! "
     "To use this app, you need to provide an OpenAI API key, which you can get [here](https://platform.openai.com/account/api-keys). "
 )
 
@@ -21,7 +25,7 @@ else:
 
     # Let the user upload a file via `st.file_uploader`.
     uploaded_file = st.file_uploader(
-        "Upload a document (.txt or .md)", type=("txt", "md")
+        "Upload a document (.txt or .md)", type=("txt", "md","xlsx"),
     )
 
     # Ask the user for a question via `st.text_area`.
@@ -32,7 +36,8 @@ else:
     )
 
     if uploaded_file and question:
-
+        defu: pd.DataFrame = pd.read_excel(uploaded_file.read())
+        st.write(str(defu.head()))
         # Process the uploaded file and question.
         document = uploaded_file.read().decode()
         messages = [
