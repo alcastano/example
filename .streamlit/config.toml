@@ -1,2 +1,4 @@
+hideTopBar = true
+
 [theme]
 base="light"
