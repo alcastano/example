@@ -1,4 +1,9 @@
-hideTopBar = true
-
 [theme]
 base="light"
+
+[client]
+toolbarMode="minimal"
+
+
+[ui]
+hideTopBar=true
