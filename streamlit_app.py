@@ -121,17 +121,23 @@ def foo():
     if submitted:
         if "sheets" in st.session_state:
             error = ""
+            n_missing = 0
             if not nombre_val:
                 error += "Campo 'Nombre' vacío.  \n"
+                n_missing += 1
             if not apellido_1_val:
                 error += "Campo 'Apellido 1' vacío.  \n"
+                n_missing += 1
             if not apellido_2_val:
                 error += "Campo 'Apellido 2' vacío.  \n"    
+                n_missing += 1
             if not nombre_padre_val:
                 error += "Campo 'Nombre Padre' vacío.  \n"  
+                n_missing += 1
             if not nombre_madre_val:
                 error += "Campo 'Nombre Madre' vacío.  \n"  
-            if error:
+                n_missing += 1
+            if n_missing > 1:
                 error += "**Todos los campos son obligatorios**.  \n"
                 st.markdown(error)
             else:
